@@ -3,7 +3,7 @@ import Footer from './Footer';
 import Header from './Header';
 import Main from './Main';
 import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup'
+import ImagePopup from './ImagePopup';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -11,13 +11,14 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
-  const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false)
-  const [selectedCard, setSelectedCard] = React.useState(null)
+  const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState(null);
 
   const handleCardClick = (card) => {
-    setSelectedCard(card)
-    setIsImagePopupOpen(true)
-  }
+    setSelectedCard(card);
+    setIsImagePopupOpen(true);
+  };
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -31,12 +32,16 @@ function App() {
     setIsAddPlacePopupOpen(true);
   };
 
+  const handleRemoveCardClick = () => {
+    setIsDeletePopupOpen(true)
+  }
+
   const closeAllPopups = () => {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
-    setIsImagePopupOpen(false)
-    setSelectedCard(null)
+    setIsImagePopupOpen(false);
+    setSelectedCard(null);
   };
 
   return (
@@ -49,12 +54,17 @@ function App() {
         onCardClick={handleCardClick}
       />
       <Footer />
-      <ImagePopup isOpen={isImagePopupOpen} card={selectedCard} onClose={closeAllPopups} />
+      <ImagePopup
+        isOpen={isImagePopupOpen}
+        card={selectedCard}
+        onClose={closeAllPopups}
+      />
       <PopupWithForm
         title="Обновить аватар"
         name="avatar"
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
+        buttonText="Обновить"
       >
         <input
           type="url"
@@ -70,6 +80,7 @@ function App() {
         title="Редактировать профиль"
         name="avatar"
         onClose={closeAllPopups}
+        buttonText="Сохранить"
         isOpen={isEditProfilePopupOpen}
       >
         <input
@@ -101,6 +112,7 @@ function App() {
         title="Новое место"
         name="avatar"
         onClose={closeAllPopups}
+        buttonText="Добавить"
         isOpen={isAddPlacePopupOpen}
       >
         <input
@@ -125,22 +137,13 @@ function App() {
           id="url-input"
         />
       </PopupWithForm>
-      <div className="popup popup-delete">
-        <div className="popup__content">
-          <button
-            className="popup__close-btn"
-            type="button"
-            aria-label="Закрыть"
-            data-delete
-          ></button>
-          <h2 className="popup__title">Вы уверены?</h2>
-          <form className="popup__form" name="confirm-form">
-            <button type="submit" className="popup__submit">
-              Да
-            </button>
-          </form>
-        </div>
-      </div>
+      <PopupWithForm
+        title="Вы уверены?"
+        name="delete"
+        onClose={closeAllPopups}
+        isOpen={isDeletePopupOpen}
+        buttonText="Да"
+      ></PopupWithForm>
     </div>
   );
 }
