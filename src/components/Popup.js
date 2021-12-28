@@ -28,13 +28,6 @@ const Popup = (props) => {
       onClick={handleOverlayClose}
     >
       {props.children}
-      <button
-        className="popup__close-btn"
-        type="button"
-        aria-label="Закрыть"
-        data-delete
-        onClick={props.onClose}
-      ></button>
     </div>
   );
 };

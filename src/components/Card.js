@@ -13,7 +13,7 @@ const Card = ({card, onCardClick})=> {
           alt="Удалить"
           className="places__delete-icon"
         />
-        <img alt="placeholder" className="places__img" src={card.link} onClick={handleClick} />
+        <img alt={card.name} className="places__img" src={card.link} onClick={handleClick} />
         <div className="places__meta">
           <h2 className="places__title">{card.name}</h2>
           <div className="places__like-container">
