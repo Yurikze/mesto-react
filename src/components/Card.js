@@ -4,19 +4,21 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const Card = ({ card, onCardClick, onCardLike }) => {
 
-  // const [isLiked, setIsLiked] = React.useState(false)
+  const [isLiked, setIsLiked] = React.useState(false)
 
   const currentUser = React.useContext(CurrentUserContext)
 
-  // React.useEffect(() => {
-  //   setIsLiked(() => card.likes.some(i => i._id === currentUser._id))
-  // }, [currentUser])
+  React.useEffect(() => {
+    setIsLiked(() => card.likes.some(i => i._id === currentUser._id))
+  }, [currentUser, card])
 
   const isOwn = card.owner._id === currentUser._id;
 
   const cardDeleteButtonClassName = (
     `card__delete-button ${isOwn ? 'places__delete-icon_visible' : 'places__delete-icon_hidden'}`
   ); 
+
+  const cardLikeBtnClassName = `places__like-btn ${isLiked && "places__like-btn_active"}`
 
 
   function handleClick() {
@@ -40,7 +42,7 @@ const Card = ({ card, onCardClick, onCardLike }) => {
         <h2 className="places__title">{card.name}</h2>
         <div className="places__like-container">
           <button
-            className="places__like-btn"
+            className={cardLikeBtnClassName}
             type="button"
             onClick={handleLikeClick}
           ></button>
