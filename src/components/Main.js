@@ -1,62 +1,56 @@
 import React from 'react';
 import api from '../utils/api';
 import addIcon from '../images/add.svg';
-import Card from './Card'
-
+import Card from './Card';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const Main = (props) => {
-  const [userName, setUserName] = React.useState('');
-  const [userDescription, setUserDescription] = React.useState('');
-  const [userAvatar, setUserAvatar] = React.useState('');
-  const [cards, setCards] = React.useState([])
-
-  React.useEffect(() => {
-    const fetchUserData = async () => {
-      const res = await api.getUserInfo();
-      setUserName(res.name);
-      setUserDescription(res.about);
-      setUserAvatar(res.avatar);
-    };
-    try {
-      fetchUserData();
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
+  const [cards, setCards] = React.useState([]);
+  const currentUser = React.useContext(CurrentUserContext)
 
   React.useEffect(() => {
     const fetchCards = async () => {
-      const res = await api.getInitialCards()
-      setCards(res)
-    }
+      const res = await api.getInitialCards();
+      setCards(res);
+    };
     try {
-      fetchCards()
+      fetchCards();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }, [])
+  }, []);
 
-  const cadsList = cards.map(card => <Card onCardClick={props.onCardClick} key={card._id} card={card} />)
+  const handleCardLike = (card) => {
+    const isLiked = card.likes.some(i => i._id === currentUser._id)
+    api.likeCard(card._id, isLiked).then(newCard => {
+      setCards(state => state.map(c => c._id === card._id ? newCard : c))
+      console.log(newCard)
+    })
+  }
+
+  const cadsList = cards.map((card) => (
+    <Card onCardClick={props.onCardClick} key={card._id} card={card} onCardLike={handleCardLike} />
+  ));
 
   return (
     <main className="main">
       <section className="profile">
         <div className="profile__ava-container" onClick={props.onEditAvatar}>
           <img
-            src={userAvatar}
+            src={currentUser && currentUser.avatar}
             alt="Аватар профиля"
             className="profile__avatar"
           />
         </div>
         <div className="profile__info">
-          <h1 className="profile__title">{userName}</h1>
+          <h1 className="profile__title">{currentUser && currentUser.name}</h1>
           <button
             className="profile__edit"
             type="button"
             aria-label="Изменить"
             onClick={props.onEditProfile}
           ></button>
-          <p className="profile__subtitle">{userDescription}</p>
+          <p className="profile__subtitle">{currentUser && currentUser.about}</p>
         </div>
         <button
           className="profile__add-btn"

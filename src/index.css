@@ -18,6 +18,8 @@
 @import url("./blocks/places/__list/places__list.css");
 @import url("./blocks/places/__li/places__li.css");
 @import url("./blocks/places/__delete-icon/places__delete-icon.css");
+@import url("./blocks/places/__delete-icon/_visible/places__delete-icon_visible.css");
+@import url("./blocks/places/__delete-icon/_hidden/places__delete-icon_hidden.css");
 @import url("./blocks/places/__meta/places__meta.css");
 @import url("./blocks/places/__title/places__title.css");
 @import url("./blocks/places/__img/places__img.css");
