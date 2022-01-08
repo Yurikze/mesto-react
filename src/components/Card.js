@@ -2,20 +2,21 @@ import React from 'react';
 import removeIcon from '../images/delete-icon.svg';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const Card = ({ card, onCardClick, onCardLike }) => {
+const Card = ({ card, onCardClick, onCardLike, onCardDelete }) => {
 
   const [isLiked, setIsLiked] = React.useState(false)
+  const [isOwn, setIsOwn] = React.useState(false)
 
   const currentUser = React.useContext(CurrentUserContext)
 
   React.useEffect(() => {
     setIsLiked(() => card.likes.some(i => i._id === currentUser._id))
+    setIsOwn(card.owner._id === currentUser._id)
   }, [currentUser, card])
 
-  const isOwn = card.owner._id === currentUser._id;
 
   const cardDeleteButtonClassName = (
-    `card__delete-button ${isOwn ? 'places__delete-icon_visible' : 'places__delete-icon_hidden'}`
+    `places__delete-icon ${isOwn ? 'places__delete-icon_visible' : 'places__delete-icon_hidden'}`
   ); 
 
   const cardLikeBtnClassName = `places__like-btn ${isLiked && "places__like-btn_active"}`
@@ -29,9 +30,13 @@ const Card = ({ card, onCardClick, onCardLike }) => {
     onCardLike(card);
   }
 
+  function handleDeleteClick() {
+    onCardDelete(card)
+  }
+
   return (
     <li className="places__li">
-      <img src={removeIcon} alt="Удалить" className={cardDeleteButtonClassName} />
+      <img src={removeIcon} alt="Удалить" className={cardDeleteButtonClassName} onClick={handleDeleteClick} />
       <img
         alt={card.name}
         className="places__img"

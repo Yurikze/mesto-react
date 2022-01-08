@@ -6,7 +6,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const Main = (props) => {
   const [cards, setCards] = React.useState([]);
-  const currentUser = React.useContext(CurrentUserContext)
+  const currentUser = React.useContext(CurrentUserContext);
 
   React.useEffect(() => {
     const fetchCards = async () => {
@@ -21,15 +21,26 @@ const Main = (props) => {
   }, []);
 
   const handleCardLike = (card) => {
-    const isLiked = card.likes.some(i => i._id === currentUser._id)
-    api.likeCard(card._id, isLiked).then(newCard => {
-      setCards(state => state.map(c => c._id === card._id ? newCard : c))
-      console.log(newCard)
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api.likeCard(card._id, isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  };
+
+  const handelCardDelete = (card) => {
+    api.deleteCard(card._id).then(res => {
+      setCards(state => state.filter(c => c._id !== card._id))
     })
   }
 
   const cadsList = cards.map((card) => (
-    <Card onCardClick={props.onCardClick} key={card._id} card={card} onCardLike={handleCardLike} />
+    <Card
+      onCardClick={props.onCardClick}
+      key={card._id}
+      card={card}
+      onCardLike={handleCardLike}
+      onCardDelete={handelCardDelete}
+    />
   ));
 
   return (
@@ -50,7 +61,9 @@ const Main = (props) => {
             aria-label="Изменить"
             onClick={props.onEditProfile}
           ></button>
-          <p className="profile__subtitle">{currentUser && currentUser.about}</p>
+          <p className="profile__subtitle">
+            {currentUser && currentUser.about}
+          </p>
         </div>
         <button
           className="profile__add-btn"
