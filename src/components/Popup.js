@@ -12,7 +12,7 @@ const Popup = (props) => {
     return () => {
       document.removeEventListener('keydown', closeByEsc);
     };
-  }, [props.isOpen]);
+  }, [props]);
 
   const handleOverlayClose = (e) => {
     if (e.target === e.currentTarget) {

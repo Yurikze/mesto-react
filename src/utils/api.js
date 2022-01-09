@@ -24,13 +24,13 @@ class Api {
     }).then((res) => this._parseResponse(res));
   }
 
-  updateUserInfo(userData) {
+  updateUserInfo({ name, about }) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this.headers,
       body: JSON.stringify({
-        name: userData.userName,
-        about: userData.userInfo,
+        name,
+        about,
       }),
     }).then((res) => this._parseResponse(res));
   }
@@ -71,7 +71,6 @@ class Api {
   }
 }
 
-
 const api = new Api({
   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-31',
   headers: {
@@ -80,4 +79,4 @@ const api = new Api({
   },
 });
 
-export default api
+export default api;
