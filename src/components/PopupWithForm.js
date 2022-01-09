@@ -14,7 +14,7 @@ const PopupWithForm = (props) => {
         onClick={props.onClose}
       ></button>
         <h2 className="popup__title">{props.title}</h2>
-        <Form name={props.name} buttonText={props.buttonText}>
+        <Form name={props.name} buttonText={props.buttonText} onSubmit={props.onSubmit}>
           {props.children}
         </Form>
       </div>
