@@ -3,6 +3,7 @@ import api from '../utils/api';
 import addIcon from '../images/add.svg';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import Avatar from './Avatar';
 
 const Main = (props) => {
   const [cards, setCards] = React.useState([]);
@@ -46,13 +47,7 @@ const Main = (props) => {
   return (
     <main className="main">
       <section className="profile">
-        <div className="profile__ava-container" onClick={props.onEditAvatar}>
-          <img
-            src={currentUser && currentUser.avatar}
-            alt="Аватар профиля"
-            className="profile__avatar"
-          />
-        </div>
+        <Avatar onClick={props.onEditAvatar} />
         <div className="profile__info">
           <h1 className="profile__title">{currentUser && currentUser.name}</h1>
           <button

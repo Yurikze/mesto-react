@@ -3,10 +3,11 @@ import Footer from './Footer';
 import Header from './Header';
 import Main from './Main';
 import PopupWithForm from './PopupWithForm';
-import EditProfilePopup from './EditProfilePopup'
+import EditProfilePopup from './EditProfilePopup';
 import ImagePopup from './ImagePopup';
 import api from '../utils/api';
 import { CurrentUserContext, user } from '../contexts/CurrentUserContext';
+import EditAvatarPopup from './EditAvatarPopup';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -32,11 +33,29 @@ function App() {
   }, []);
 
   const handleUpdateUser = (userData) => {
-    api.updateUserInfo(userData).then(res => {
-      setCurrentUser(res)
-      closeAllPopups()
-    })
-  }
+    api
+      .updateUserInfo(userData)
+      .then((res) => {
+        setCurrentUser(res);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleUpdateAvatar = ({ avatar }) => {
+    api
+      .updateAvatar(avatar)
+      .then((res) => {
+        setCurrentUser(user => {
+          return {
+            ...user,
+            avatar: res.avatar
+          }
+        })
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
@@ -83,24 +102,16 @@ function App() {
           card={selectedCard}
           onClose={closeAllPopups}
         />
-        <PopupWithForm
-          title="Обновить аватар"
-          name="avatar"
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-          buttonText="Обновить"
-        >
-          <input
-            type="url"
-            name="avaUrl"
-            className="popup__input"
-            required
-            placeholder="Ссылка на картинку"
-            id="ava-url-input"
-          />
-          <span className="popup__input-error ava-url-input-error"></span>
-        </PopupWithForm>
-        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+          onUpdateAvatar={handleUpdateAvatar}
+        />
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+        />
         <PopupWithForm
           title="Новое место"
           name="avatar"
