@@ -1,46 +1,19 @@
 import React from 'react';
-import api from '../utils/api';
 import addIcon from '../images/add.svg';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Avatar from './Avatar';
 
 const Main = (props) => {
-  const [cards, setCards] = React.useState([]);
   const currentUser = React.useContext(CurrentUserContext);
 
-  React.useEffect(() => {
-    const fetchCards = async () => {
-      const res = await api.getInitialCards();
-      setCards(res);
-    };
-    try {
-      fetchCards();
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  const handleCardLike = (card) => {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api.likeCard(card._id, isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    });
-  };
-
-  const handelCardDelete = (card) => {
-    api.deleteCard(card._id).then(res => {
-      setCards(state => state.filter(c => c._id !== card._id))
-    })
-  }
-
-  const cadsList = cards.map((card) => (
+  const cadsList = props.cards.map((card) => (
     <Card
       onCardClick={props.onCardClick}
       key={card._id}
       card={card}
-      onCardLike={handleCardLike}
-      onCardDelete={handelCardDelete}
+      onCardLike={props.onCardLike}
+      onCardDelete={props.onCardDelete}
     />
   ));
 

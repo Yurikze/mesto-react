@@ -8,6 +8,7 @@ import ImagePopup from './ImagePopup';
 import api from '../utils/api';
 import { CurrentUserContext, user } from '../contexts/CurrentUserContext';
 import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -19,6 +20,7 @@ function App() {
   const [isDeletePopupOpen, setIsDeletePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [currentUser, setCurrentUser] = React.useState(user);
+  const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
     async function fetchUserData() {
@@ -31,6 +33,31 @@ function App() {
       console.log(err);
     }
   }, []);
+
+  React.useEffect(() => {
+    const fetchCards = async () => {
+      const res = await api.getInitialCards();
+      setCards(res);
+    };
+    try {
+      fetchCards();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  const handleCardLike = (card) => {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api.likeCard(card._id, isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  };
+
+  const handelCardDelete = (card) => {
+    api.deleteCard(card._id).then((res) => {
+      setCards((state) => state.filter((c) => c._id !== card._id));
+    });
+  };
 
   const handleUpdateUser = (userData) => {
     api
@@ -46,15 +73,22 @@ function App() {
     api
       .updateAvatar(avatar)
       .then((res) => {
-        setCurrentUser(user => {
+        setCurrentUser((user) => {
           return {
             ...user,
-            avatar: res.avatar
-          }
-        })
+            avatar: res.avatar,
+          };
+        });
         closeAllPopups();
       })
       .catch((err) => console.log(err));
+  };
+
+  const handleAddPlaceSubmit = (newPlace) => {
+    api.addCard(newPlace).then((newCard) => {
+      setCards([newCard, ...cards])
+      closeAllPopups()
+    });
   };
 
   const handleCardClick = (card) => {
@@ -95,6 +129,9 @@ function App() {
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handelCardDelete}
         />
         <Footer />
         <ImagePopup
@@ -112,35 +149,11 @@ function App() {
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
-        <PopupWithForm
-          title="Новое место"
-          name="avatar"
-          onClose={closeAllPopups}
-          buttonText="Добавить"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
-        >
-          <input
-            type="text"
-            name="title"
-            autoComplete="off"
-            className="popup__input"
-            required
-            placeholder="Название"
-            minLength="2"
-            maxLength="30"
-            id="place-name-input"
-          />
-          <span className="popup__input-error place-name-input-error"></span>
-
-          <input
-            type="url"
-            name="subtitle"
-            className="popup__input"
-            required
-            placeholder="Ссылка на картинку"
-            id="url-input"
-          />
-        </PopupWithForm>
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit}
+        />
         <PopupWithForm
           title="Вы уверены?"
           name="delete"
