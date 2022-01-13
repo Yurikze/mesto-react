@@ -19,6 +19,8 @@ const AddPlacePopup = (props) => {
       name,
       link,
     });
+    setName('')
+    setLink('')
   };
 
   return (
