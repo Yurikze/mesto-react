@@ -10,7 +10,7 @@ const EditProfilePopup = (props) => {
   React.useEffect(() => {
     setName(currentUser.name)
     setDescription(currentUser.about)
-  }, [currentUser])
+  }, [currentUser, props.isOpen])
 
   const nameChangeHandler = e => {
     setName(e.target.value)
@@ -48,7 +48,7 @@ const EditProfilePopup = (props) => {
         minLength="2"
         maxLength="40"
         id="name-input"
-        value={name}
+        value={name ? name : ""}
         onChange={nameChangeHandler}
       />
       <span className="popup__input-error name-input-error"></span>
@@ -62,7 +62,7 @@ const EditProfilePopup = (props) => {
         minLength="2"
         maxLength="200"
         id="about-input"
-        value={description}
+        value={description ? description : ""}
         onChange={descriptionChangeHandler}
       />
       <span className="popup__input-error about-input-error"></span>

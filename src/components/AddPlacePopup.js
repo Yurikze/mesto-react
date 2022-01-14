@@ -5,6 +5,11 @@ const AddPlacePopup = (props) => {
   const [name, setName] = React.useState('');
   const [link, setLink] = React.useState('');
 
+  React.useEffect(() => {
+    setName('');
+    setLink('');
+  }, [props.isOpen]);
+
   const nameChangeHandler = (e) => {
     setName(e.target.value);
   };
@@ -19,8 +24,6 @@ const AddPlacePopup = (props) => {
       name,
       link,
     });
-    setName('')
-    setLink('')
   };
 
   return (
